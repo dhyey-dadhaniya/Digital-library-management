@@ -1,0 +1,16 @@
+com\library\controller\GlobalExceptionHandler.class
+com\library\controller\BookIssueController.class
+com\library\repository\BookRepository.class
+com\library\repository\BookIssueRepository.class
+com\library\service\MemberService.class
+com\library\entity\Member.class
+com\library\DigitalLibraryApplication.class
+com\library\entity\Member$Role.class
+com\library\entity\BookIssue.class
+com\library\service\BookService.class
+com\library\service\BookIssueService.class
+com\library\controller\BookController.class
+com\library\controller\MemberController.class
+com\library\repository\MemberRepository.class
+com\library\controller\HomeController.class
+com\library\entity\Book.class
