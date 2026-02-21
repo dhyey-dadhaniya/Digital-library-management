@@ -21,18 +21,13 @@ public class BookIssueController {
 
     // POST /api/issues/issue - Issue a book to a member (Admin)
     @PostMapping("/issue")
-    public ResponseEntity<BookIssue> issueBook(@RequestBody Map<String, Long> body) {
-        Long bookId = body.get("bookId");
-        Long memberId = body.get("memberId");
-        if (bookId == null || memberId == null) {
-            return ResponseEntity.badRequest().build();
+    public ResponseEntity<?> issueBook(@RequestBody IssueBookRequest request) {
+        if (request.getBookId() == null || request.getMemberId() == null) {
+            throw new IllegalArgumentException("bookId and memberId are required and must be valid numbers");
         }
-        try {
-            BookIssue issue = bookIssueService.issueBook(bookId, memberId);
-            return ResponseEntity.status(HttpStatus.CREATED).body(issue);
-        } catch (IllegalArgumentException | IllegalStateException e) {
-            return ResponseEntity.badRequest().build();
-        }
+        
+        BookIssue issue = bookIssueService.issueBook(request.getBookId(), request.getMemberId());
+        return ResponseEntity.status(HttpStatus.CREATED).body(issue);
     }
 
     // PUT /api/issues/return/{id} - Return a book (calc fine) (Admin)

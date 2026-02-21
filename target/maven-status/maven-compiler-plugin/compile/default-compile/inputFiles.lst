@@ -6,6 +6,7 @@ C:\Users\dhyey\OneDrive\Desktop\Digital library management\Digital-library-manag
 C:\Users\dhyey\OneDrive\Desktop\Digital library management\Digital-library-management\src\main\java\com\library\controller\MemberController.java
 C:\Users\dhyey\OneDrive\Desktop\Digital library management\Digital-library-management\src\main\java\com\library\repository\BookRepository.java
 C:\Users\dhyey\OneDrive\Desktop\Digital library management\Digital-library-management\src\main\java\com\library\entity\Book.java
+C:\Users\dhyey\OneDrive\Desktop\Digital library management\Digital-library-management\src\main\java\com\library\controller\IssueBookRequest.java
 C:\Users\dhyey\OneDrive\Desktop\Digital library management\Digital-library-management\src\main\java\com\library\entity\Member.java
 C:\Users\dhyey\OneDrive\Desktop\Digital library management\Digital-library-management\src\main\java\com\library\entity\BookIssue.java
 C:\Users\dhyey\OneDrive\Desktop\Digital library management\Digital-library-management\src\main\java\com\library\repository\MemberRepository.java
