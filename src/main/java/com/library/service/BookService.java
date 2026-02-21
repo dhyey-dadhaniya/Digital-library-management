@@ -42,6 +42,9 @@ public class BookService {
                     existing.setTitle(updated.getTitle());
                     existing.setAuthor(updated.getAuthor());
                     existing.setIsbn(updated.getIsbn());
+                    existing.setCategory(updated.getCategory());
+                    existing.setPublisher(updated.getPublisher());
+                    existing.setPublishedYear(updated.getPublishedYear());
                     existing.setTotalCopies(updated.getTotalCopies());
                     existing.setAvailableCopies(updated.getAvailableCopies() != null
                             ? updated.getAvailableCopies() : existing.getAvailableCopies());
@@ -67,5 +70,15 @@ public class BookService {
     @Transactional(readOnly = true)
     public Optional<Book> findByIsbn(String isbn) {
         return bookRepository.findByIsbn(isbn);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Book> findByCategory(String category) {
+        return bookRepository.findByCategory(category);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Book> findAvailable() {
+        return bookRepository.findByAvailableCopiesGreaterThan(0);
     }
 }

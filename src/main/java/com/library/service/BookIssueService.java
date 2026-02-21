@@ -6,10 +6,12 @@ import com.library.entity.Member;
 import com.library.repository.BookIssueRepository;
 import com.library.repository.BookRepository;
 import com.library.repository.MemberRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,6 +21,12 @@ public class BookIssueService {
     private final BookIssueRepository bookIssueRepository;
     private final BookRepository bookRepository;
     private final MemberRepository memberRepository;
+
+    @Value("${library.loan.period.days:14}")
+    private int loanPeriodDays;
+
+    @Value("${library.fine.rate.per.day:5.00}")
+    private double fineRatePerDay;
 
     public BookIssueService(BookIssueRepository bookIssueRepository,
                             BookRepository bookRepository,
@@ -68,8 +76,11 @@ public class BookIssueService {
         BookIssue issue = new BookIssue();
         issue.setBook(book);
         issue.setMember(member);
-        issue.setIssueDate(LocalDate.now());
+        LocalDate issueDate = LocalDate.now();
+        issue.setIssueDate(issueDate);
+        issue.setDueDate(issueDate.plusDays(loanPeriodDays));
         issue.setReturned(false);
+        issue.setFine(0.0);
         book.setAvailableCopies(book.getAvailableCopies() - 1);
         bookRepository.save(book);
         return bookIssueRepository.save(issue);
@@ -82,8 +93,20 @@ public class BookIssueService {
         if (Boolean.TRUE.equals(issue.getReturned())) {
             throw new IllegalStateException("Book already returned.");
         }
+        LocalDate returnDate = LocalDate.now();
         issue.setReturned(true);
-        issue.setReturnDate(LocalDate.now());
+        issue.setReturnDate(returnDate);
+        
+        // Calculate fine if overdue
+        LocalDate dueDate = issue.getDueDate();
+        if (returnDate.isAfter(dueDate)) {
+            long daysOverdue = ChronoUnit.DAYS.between(dueDate, returnDate);
+            double fine = daysOverdue * fineRatePerDay;
+            issue.setFine(fine);
+        } else {
+            issue.setFine(0.0);
+        }
+        
         Book book = issue.getBook();
         book.setAvailableCopies(book.getAvailableCopies() + 1);
         bookRepository.save(book);

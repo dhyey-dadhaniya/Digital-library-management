@@ -22,10 +22,16 @@ public class BookIssue {
     @Column(nullable = false)
     private LocalDate issueDate;
 
+    @Column(nullable = false)
+    private LocalDate dueDate;
+
     private LocalDate returnDate;
 
     @Column(nullable = false)
     private Boolean returned = false;
+
+    @Column(nullable = false)
+    private Double fine = 0.0;
 
     public BookIssue() {
     }
@@ -76,5 +82,21 @@ public class BookIssue {
 
     public void setReturned(Boolean returned) {
         this.returned = returned;
+    }
+
+    public LocalDate getDueDate() {
+        return dueDate;
+    }
+
+    public void setDueDate(LocalDate dueDate) {
+        this.dueDate = dueDate;
+    }
+
+    public Double getFine() {
+        return fine;
+    }
+
+    public void setFine(Double fine) {
+        this.fine = fine;
     }
 }
