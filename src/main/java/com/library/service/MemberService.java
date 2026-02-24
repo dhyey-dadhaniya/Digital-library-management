@@ -47,6 +47,11 @@ public class MemberService {
                 .map(existing -> {
                     existing.setName(updated.getName());
                     existing.setEmail(updated.getEmail());
+                    if (updated.getPassword() != null && !updated.getPassword().isEmpty()) {
+                        existing.setPassword(updated.getPassword());
+                    }
+                    existing.setPhone(updated.getPhone());
+                    existing.setAddress(updated.getAddress());
                     if (updated.getRole() != null) {
                         existing.setRole(updated.getRole());
                     }
@@ -67,5 +72,11 @@ public class MemberService {
     @Transactional(readOnly = true)
     public List<Member> findByRole(Role role) {
         return memberRepository.findByRole(role);
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<Member> login(String email, String password) {
+        return memberRepository.findByEmail(email)
+                .filter(member -> member.getPassword() != null && member.getPassword().equals(password));
     }
 }

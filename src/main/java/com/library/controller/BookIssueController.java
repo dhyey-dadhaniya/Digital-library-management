@@ -19,46 +19,19 @@ public class BookIssueController {
         this.bookIssueService = bookIssueService;
     }
 
-    @GetMapping
-    public List<BookIssue> getAllIssues(
-            @RequestParam(required = false) Long memberId,
-            @RequestParam(required = false) Long bookId,
-            @RequestParam(required = false) Boolean active) {
-        if (memberId != null) {
-            return bookIssueService.findByMemberId(memberId);
-        }
-        if (bookId != null) {
-            return bookIssueService.findByBookId(bookId);
-        }
-        if (Boolean.TRUE.equals(active)) {
-            return bookIssueService.findActiveIssues();
-        }
-        return bookIssueService.findAll();
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<BookIssue> getIssueById(@PathVariable Long id) {
-        return bookIssueService.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-    }
-
+    // POST /api/issues/issue - Issue a book to a member (Admin)
     @PostMapping("/issue")
-    public ResponseEntity<BookIssue> issueBook(@RequestBody Map<String, Long> body) {
-        Long bookId = body.get("bookId");
-        Long memberId = body.get("memberId");
-        if (bookId == null || memberId == null) {
-            return ResponseEntity.badRequest().build();
+    public ResponseEntity<?> issueBook(@RequestBody IssueBookRequest request) {
+        if (request.getBookId() == null || request.getMemberId() == null) {
+            throw new IllegalArgumentException("bookId and memberId are required and must be valid numbers");
         }
-        try {
-            BookIssue issue = bookIssueService.issueBook(bookId, memberId);
-            return ResponseEntity.status(HttpStatus.CREATED).body(issue);
-        } catch (IllegalArgumentException | IllegalStateException e) {
-            return ResponseEntity.badRequest().build();
-        }
+        
+        BookIssue issue = bookIssueService.issueBook(request.getBookId(), request.getMemberId());
+        return ResponseEntity.status(HttpStatus.CREATED).body(issue);
     }
 
-    @PostMapping("/{id}/return")
+    // PUT /api/issues/return/{id} - Return a book (calc fine) (Admin)
+    @PutMapping("/return/{id}")
     public ResponseEntity<BookIssue> returnBook(@PathVariable Long id) {
         try {
             BookIssue returned = bookIssueService.returnBook(id);
@@ -66,5 +39,31 @@ public class BookIssueController {
         } catch (IllegalArgumentException | IllegalStateException e) {
             return ResponseEntity.badRequest().build();
         }
+    }
+
+    // GET /api/issues/member/{id} - View member's borrow history (User)
+    @GetMapping("/member/{id}")
+    public List<BookIssue> getMemberBorrowHistory(@PathVariable Long id) {
+        return bookIssueService.findByMemberId(id);
+    }
+
+    // GET /api/issues/{id} - Get issue details (User)
+    @GetMapping("/{id}")
+    public ResponseEntity<BookIssue> getIssueById(@PathVariable Long id) {
+        return bookIssueService.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    // GET /api/issues/admin/all - All issue records (Admin)
+    @GetMapping("/admin/all")
+    public List<BookIssue> getAllIssues() {
+        return bookIssueService.findAll();
+    }
+
+    // GET /api/issues/admin/current - Currently issued books (Admin)
+    @GetMapping("/admin/current")
+    public List<BookIssue> getCurrentIssues() {
+        return bookIssueService.findActiveIssues();
     }
 }

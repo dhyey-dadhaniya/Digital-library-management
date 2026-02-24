@@ -1,6 +1,7 @@
 com\library\controller\GlobalExceptionHandler.class
 com\library\controller\BookIssueController.class
 com\library\repository\BookRepository.class
+com\library\controller\IssueBookRequest.class
 com\library\repository\BookIssueRepository.class
 com\library\service\MemberService.class
 com\library\entity\Member.class

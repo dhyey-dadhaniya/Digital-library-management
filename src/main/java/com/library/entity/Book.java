@@ -22,6 +22,12 @@ public class Book {
 
     private String isbn;
 
+    private String category;
+
+    private String publisher;
+
+    private Integer publishedYear;
+
     @NotNull
     @Column(nullable = false)
     private Integer totalCopies;
@@ -80,5 +86,29 @@ public class Book {
 
     public void setAvailableCopies(Integer availableCopies) {
         this.availableCopies = availableCopies;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getPublisher() {
+        return publisher;
+    }
+
+    public void setPublisher(String publisher) {
+        this.publisher = publisher;
+    }
+
+    public Integer getPublishedYear() {
+        return publishedYear;
+    }
+
+    public void setPublishedYear(Integer publishedYear) {
+        this.publishedYear = publishedYear;
     }
 }

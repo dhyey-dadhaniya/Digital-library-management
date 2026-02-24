@@ -19,19 +19,13 @@ public class BookController {
         this.bookService = bookService;
     }
 
+    // GET /api/books - Get all books
     @GetMapping
-    public List<Book> getAllBooks(
-            @RequestParam(required = false) String title,
-            @RequestParam(required = false) String author) {
-        if (title != null && !title.isBlank()) {
-            return bookService.findByTitle(title);
-        }
-        if (author != null && !author.isBlank()) {
-            return bookService.findByAuthor(author);
-        }
+    public List<Book> getAllBooks() {
         return bookService.findAll();
     }
 
+    // GET /api/books/{id} - Get book by ID
     @GetMapping("/{id}")
     public ResponseEntity<Book> getBookById(@PathVariable Long id) {
         return bookService.findById(id)
@@ -39,20 +33,47 @@ public class BookController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PostMapping
+    // GET /api/books/available - Get available books only
+    @GetMapping("/available")
+    public List<Book> getAvailableBooks() {
+        return bookService.findAvailable();
+    }
+
+    // GET /api/books/search/title?title=X - Search by title
+    @GetMapping("/search/title")
+    public List<Book> searchByTitle(@RequestParam String title) {
+        return bookService.findByTitle(title);
+    }
+
+    // GET /api/books/search/author?author=X - Search by author
+    @GetMapping("/search/author")
+    public List<Book> searchByAuthor(@RequestParam String author) {
+        return bookService.findByAuthor(author);
+    }
+
+    // GET /api/books/category/{category} - Browse by category
+    @GetMapping("/category/{category}")
+    public List<Book> getBooksByCategory(@PathVariable String category) {
+        return bookService.findByCategory(category);
+    }
+
+    // POST /api/books/admin - Add a new book (Admin)
+    @PostMapping("/admin")
     public ResponseEntity<Book> createBook(@Valid @RequestBody Book book) {
         Book saved = bookService.save(book);
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
-    @PutMapping("/{id}")
+    // PUT /api/books/admin/{id} - Update book (Admin)
+    @PutMapping("/admin/{id}")
     public ResponseEntity<Book> updateBook(@PathVariable Long id, @Valid @RequestBody Book book) {
         return bookService.update(id, book)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @DeleteMapping("/{id}")
+    // DELETE /api/books/admin/{id} - Delete book (Admin)
+    @DeleteMapping("/admin/{id}")
     public ResponseEntity<Void> deleteBook(@PathVariable Long id) {
         if (bookService.findById(id).isEmpty()) {
             return ResponseEntity.notFound().build();
